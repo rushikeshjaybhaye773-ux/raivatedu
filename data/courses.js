@@ -320,7 +320,7 @@ export const courses = [
     reviewsCount: 780,
     studentsCount: 2150,
     featured: true,
-    thumbnail: "https://images.unsplash.com/photo-1677442136019-21780efad99a?auto=format&fit=crop&w=1200&q=80",
+    thumbnail: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=1200&q=80",
     badge: "Hot",
     shortDescription: "Learn to build intelligent applications with LangChain, LlamaIndex, Vector Databases, Retrieval Augmented Generation (RAG), and open-source models.",
     fullDescription: "Step into the cutting edge of modern software engineering. This advanced program teaches developers how to integrate foundation models into production systems, design resilient multi-turn agents, create robust RAG architectures using vector search, and evaluate LLM responses.",

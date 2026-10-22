@@ -2,16 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
-  BookOpen,
   CheckCircle2,
   GraduationCap,
-  Sparkles,
   Star,
-  Trophy,
   Users,
-  Video,
-  ShieldCheck,
-  Code2,
 } from "lucide-react";
 
 import { courses, courseCategories } from "@/data/courses";
@@ -119,7 +113,10 @@ export default function HomePage() {
             <div className="lg:col-span-5 relative">
               <div className="relative mx-auto max-w-md lg:max-w-none">
                 {/* Main Card / Image Wrapper */}
-                <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white dark:border-slate-800 aspect-[4/4.5] bg-gradient-to-br from-indigo-700 to-indigo-950">
+                <div
+                  className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white dark:border-slate-800 aspect-[4/4.5] bg-gradient-to-br from-indigo-700 to-indigo-950"
+                  style={{ position: "relative" }}
+                >
                   <Image
                     src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1000&q=80"
                     alt="Students collaborating and learning with Raivatedu mentors"
@@ -317,13 +314,13 @@ export default function HomePage() {
 
               {/* Author & Transition */}
               <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center gap-4">
-                <div className="relative w-12 h-12 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 shrink-0 border border-slate-200 dark:border-slate-700">
+                <div className="w-12 h-12 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 shrink-0 border border-slate-200 dark:border-slate-700">
                   <Image
                     src={item.avatar}
                     alt={item.name}
-                    fill
-                    sizes="48px"
-                    className="object-cover"
+                    width={48}
+                    height={48}
+                    className="w-full h-full object-cover"
                   />
                 </div>
                 <div className="min-w-0">

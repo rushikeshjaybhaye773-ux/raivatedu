@@ -7,13 +7,13 @@ export default function MentorCard({ mentor }) {
       <div>
         {/* Mentor Avatar & Company */}
         <div className="flex items-center gap-4 mb-4">
-          <div className="relative w-16 h-16 rounded-2xl overflow-hidden shrink-0 border-2 border-indigo-100 dark:border-indigo-900 shadow-sm group-hover:scale-105 transition-transform">
+          <div className="w-16 h-16 rounded-2xl overflow-hidden shrink-0 border-2 border-indigo-100 dark:border-indigo-900 shadow-sm group-hover:scale-105 transition-transform">
             <Image
               src={mentor.avatar}
               alt={`Portrait of ${mentor.name}`}
-              fill
-              sizes="64px"
-              className="object-cover"
+              width={64}
+              height={64}
+              className="w-full h-full object-cover"
             />
           </div>
           <div className="min-w-0">

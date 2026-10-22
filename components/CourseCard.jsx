@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Clock, Star, Users, ArrowRight, Sparkles } from "lucide-react";
+import { Clock, Star, ArrowRight, Sparkles } from "lucide-react";
 import Button from "./Button";
 
 export default function CourseCard({ course }) {
@@ -17,7 +17,10 @@ export default function CourseCard({ course }) {
   return (
     <article className="group bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 overflow-hidden shadow-sm hover:shadow-xl hover:border-indigo-300 dark:hover:border-indigo-700 transition-all duration-300 flex flex-col h-full">
       {/* Thumbnail Wrapper */}
-      <div className="relative aspect-[16/9] w-full overflow-hidden bg-slate-100 dark:bg-slate-800">
+      <div
+        className="relative aspect-[16/9] w-full overflow-hidden bg-slate-100 dark:bg-slate-800"
+        style={{ position: "relative" }}
+      >
         <Image
           src={course.thumbnail}
           alt={course.title}
@@ -84,13 +87,13 @@ export default function CourseCard({ course }) {
 
         {/* Instructor */}
         <div className="flex items-center gap-3 pt-3 pb-4 border-t border-slate-100 dark:border-slate-800/80">
-          <div className="relative w-8 h-8 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 shrink-0 border border-slate-200 dark:border-slate-600">
+          <div className="w-8 h-8 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 shrink-0 border border-slate-200 dark:border-slate-600">
             <Image
               src={course.instructor.avatar}
               alt={course.instructor.name}
-              fill
-              sizes="32px"
-              className="object-cover"
+              width={32}
+              height={32}
+              className="w-full h-full object-cover"
             />
           </div>
           <div className="flex flex-col min-w-0">

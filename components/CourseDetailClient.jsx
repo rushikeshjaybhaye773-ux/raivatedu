@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import {
   Clock,
   Star,
@@ -10,16 +9,13 @@ import {
   ShieldCheck,
   CheckCircle2,
   Calendar,
-  Sparkles,
   ChevronDown,
   ArrowRight,
   BookOpen,
   Award,
   Video,
   FileText,
-  Lock,
   PlayCircle,
-  HelpCircle,
 } from "lucide-react";
 import Button from "./Button";
 import EnrollModal from "./EnrollModal";
@@ -47,7 +43,10 @@ export default function CourseDetailClient({ course, relatedCourses }) {
         {/* Main Left Content: 8 columns */}
         <div className="lg:col-span-8 space-y-12">
           {/* Hero Banner / Course Image */}
-          <div className="relative aspect-[16/9] w-full rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-xl bg-slate-900">
+          <div
+            className="relative aspect-[16/9] w-full rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-xl bg-slate-900"
+            style={{ position: "relative" }}
+          >
             <Image
               src={course.thumbnail}
               alt={course.title}
@@ -209,13 +208,13 @@ export default function CourseDetailClient({ course, relatedCourses }) {
             </h2>
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-              <div className="relative w-24 h-24 rounded-2xl overflow-hidden shrink-0 border-2 border-indigo-100 dark:border-indigo-900 shadow-md">
+              <div className="w-24 h-24 rounded-2xl overflow-hidden shrink-0 border-2 border-indigo-100 dark:border-indigo-900 shadow-md">
                 <Image
                   src={course.instructor.avatar}
                   alt={course.instructor.name}
-                  fill
-                  sizes="96px"
-                  className="object-cover"
+                  width={96}
+                  height={96}
+                  className="w-full h-full object-cover"
                 />
               </div>
 
