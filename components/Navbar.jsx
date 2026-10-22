@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, GraduationCap, ArrowRight, Sparkles, BookOpen } from "lucide-react";
+import { Menu, X, GraduationCap, ArrowRight } from "lucide-react";
 import Button from "./Button";
 import ThemeToggle from "./ThemeToggle";
 
@@ -19,11 +19,6 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  // Close mobile menu on route change
-  useEffect(() => {
-    setIsOpen(false);
-  }, [pathname]);
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {

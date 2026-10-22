@@ -1,15 +1,12 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
   Search,
-  SlidersHorizontal,
   X,
   RotateCcw,
   BookOpen,
   ArrowUpDown,
-  Filter,
 } from "lucide-react";
 import { courses, courseCategories } from "@/data/courses";
 import CourseCard from "@/components/CourseCard";
@@ -19,32 +16,12 @@ export default function CoursesExplorer() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  // Initialize from URL search parameters if available
-  const initialSearch = searchParams.get("search") || "";
-  const initialCategory = searchParams.get("category") || "All";
-  const initialLevel = searchParams.get("level") || "All";
-  const initialSort = searchParams.get("sort") || "featured";
+  // Derive filters directly from URL query parameters (single source of truth)
+  const searchTerm = searchParams.get("search") || "";
+  const selectedCategory = searchParams.get("category") || "All";
+  const selectedLevel = searchParams.get("level") || "All";
+  const sortBy = searchParams.get("sort") || "featured";
 
-  const [searchTerm, setSearchTerm] = useState(initialSearch);
-  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
-  const [selectedLevel, setSelectedLevel] = useState(initialLevel);
-  const [sortBy, setSortBy] = useState(initialSort);
-  const [showMobileFilters, setShowMobileFilters] = useState(false);
-
-  // Sync state when URL params change (e.g., navigating from home page search or category link)
-  useEffect(() => {
-    const urlSearch = searchParams.get("search");
-    const urlCategory = searchParams.get("category");
-    const urlLevel = searchParams.get("level");
-    const urlSort = searchParams.get("sort");
-
-    if (urlSearch !== null) setSearchTerm(urlSearch);
-    if (urlCategory !== null) setSelectedCategory(urlCategory);
-    if (urlLevel !== null) setSelectedLevel(urlLevel);
-    if (urlSort !== null) setSortBy(urlSort);
-  }, [searchParams]);
-
-  // Update URL search parameters when filters change
   const updateUrlParams = (newSearch, newCategory, newLevel, newSort) => {
     const params = new URLSearchParams();
     if (newSearch) params.set("search", newSearch);
@@ -57,30 +34,22 @@ export default function CoursesExplorer() {
   };
 
   const handleCategoryChange = (cat) => {
-    setSelectedCategory(cat);
     updateUrlParams(searchTerm, cat, selectedLevel, sortBy);
   };
 
   const handleLevelChange = (lvl) => {
-    setSelectedLevel(lvl);
     updateUrlParams(searchTerm, selectedCategory, lvl, sortBy);
   };
 
   const handleSortChange = (sortOption) => {
-    setSortBy(sortOption);
     updateUrlParams(searchTerm, selectedCategory, selectedLevel, sortOption);
   };
 
   const handleSearchChange = (val) => {
-    setSearchTerm(val);
     updateUrlParams(val, selectedCategory, selectedLevel, sortBy);
   };
 
   const handleClearFilters = () => {
-    setSearchTerm("");
-    setSelectedCategory("All");
-    setSelectedLevel("All");
-    setSortBy("featured");
     router.replace("/courses", { scroll: false });
   };
 
@@ -90,38 +59,33 @@ export default function CoursesExplorer() {
     selectedLevel !== "All" ||
     sortBy !== "featured";
 
-  // Filter & Sort Logic
-  const filteredCourses = useMemo(() => {
-    return courses
-      .filter((course) => {
-        // Search term matching title, description, instructor, or category
-        const matchesSearch =
-          searchTerm.trim() === "" ||
-          course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          course.shortDescription.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          course.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          course.instructor.name.toLowerCase().includes(searchTerm.toLowerCase());
+  // Filter & Sort Logic directly derived on each render
+  const filteredCourses = courses
+    .filter((course) => {
+      const matchesSearch =
+        searchTerm.trim() === "" ||
+        course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        course.shortDescription.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        course.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        course.instructor.name.toLowerCase().includes(searchTerm.toLowerCase());
 
-        // Category filter
-        const matchesCategory =
-          selectedCategory === "All" || course.category === selectedCategory;
+      const matchesCategory =
+        selectedCategory === "All" || course.category === selectedCategory;
 
-        // Level filter
-        const matchesLevel =
-          selectedLevel === "All" || course.level === selectedLevel;
+      const matchesLevel =
+        selectedLevel === "All" || course.level === selectedLevel;
 
-        return matchesSearch && matchesCategory && matchesLevel;
-      })
-      .sort((a, b) => {
-        if (sortBy === "price-low") return a.price - b.price;
-        if (sortBy === "price-high") return b.price - a.price;
-        if (sortBy === "rating") return b.rating - a.rating;
-        // Default: featured
-        if (a.featured && !b.featured) return -1;
-        if (!a.featured && b.featured) return 1;
-        return 0;
-      });
-  }, [searchTerm, selectedCategory, selectedLevel, sortBy]);
+      return matchesSearch && matchesCategory && matchesLevel;
+    })
+    .sort((a, b) => {
+      if (sortBy === "price-low") return a.price - b.price;
+      if (sortBy === "price-high") return b.price - a.price;
+      if (sortBy === "rating") return b.rating - a.rating;
+      // Default: featured
+      if (a.featured && !b.featured) return -1;
+      if (!a.featured && b.featured) return 1;
+      return 0;
+    });
 
   const levels = ["All", "Beginner", "Intermediate", "Advanced"];
   const categoriesList = ["All", ...courseCategories.map((c) => c.name)];
@@ -155,44 +119,28 @@ export default function CoursesExplorer() {
             )}
           </div>
 
-          {/* Sort Dropdown & Mobile Filter Toggle */}
-          <div className="flex items-center gap-3">
-            <div className="relative flex-1 sm:w-56">
-              <label htmlFor="course-sort" className="sr-only">
-                Sort courses by
-              </label>
-              <select
-                id="course-sort"
-                value={sortBy}
-                onChange={(e) => handleSortChange(e.target.value)}
-                className="w-full appearance-none pl-4 pr-10 py-3 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-sm font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 cursor-pointer"
-              >
-                <option value="featured">Sort by: Featured</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="rating">Highest Rating</option>
-              </select>
-              <ArrowUpDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-            </div>
-
-            <button
-              type="button"
-              onClick={() => setShowMobileFilters(!showMobileFilters)}
-              className="lg:hidden p-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-100 flex items-center gap-2 text-sm font-semibold"
-              aria-label="Toggle filters"
+          {/* Sort Dropdown */}
+          <div className="relative w-full sm:w-60">
+            <label htmlFor="course-sort" className="sr-only">
+              Sort courses by
+            </label>
+            <select
+              id="course-sort"
+              value={sortBy}
+              onChange={(e) => handleSortChange(e.target.value)}
+              className="w-full appearance-none pl-4 pr-10 py-3 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-sm font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 cursor-pointer"
             >
-              <Filter className="w-4 h-4" />
-              <span>Filters</span>
-            </button>
+              <option value="featured">Sort by: Featured</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="rating">Highest Rating</option>
+            </select>
+            <ArrowUpDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
           </div>
         </div>
 
         {/* Categories Pills */}
-        <div
-          className={`space-y-4 ${
-            showMobileFilters ? "block" : "hidden lg:block"
-          }`}
-        >
+        <div className="space-y-4">
           <div>
             <div className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2.5">
               Categories
@@ -274,7 +222,7 @@ export default function CoursesExplorer() {
 
         {hasActiveFilters && (
           <span className="text-xs text-slate-500 dark:text-slate-400 hidden sm:inline">
-            Filters applied
+            Filters active
           </span>
         )}
       </div>

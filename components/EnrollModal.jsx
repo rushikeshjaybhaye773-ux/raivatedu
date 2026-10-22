@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, CheckCircle2, AlertCircle, ArrowRight, Sparkles, BookOpen, Clock, Calendar } from "lucide-react";
+import { X, CheckCircle2, AlertCircle, ArrowRight, BookOpen } from "lucide-react";
 import Button from "./Button";
 
 export default function EnrollModal({ course, isOpen, onClose }) {
@@ -22,8 +22,6 @@ export default function EnrollModal({ course, isOpen, onClose }) {
     if (isOpen) {
       window.addEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "hidden";
-      setIsSubmitted(false);
-      setErrors({});
     }
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
@@ -32,6 +30,12 @@ export default function EnrollModal({ course, isOpen, onClose }) {
   }, [isOpen, onClose]);
 
   if (!isOpen || !course) return null;
+
+  const handleCloseModal = () => {
+    setIsSubmitted(false);
+    setErrors({});
+    onClose();
+  };
 
   const validate = () => {
     const newErrors = {};
@@ -85,14 +89,14 @@ export default function EnrollModal({ course, isOpen, onClose }) {
             <span className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-yellow-400 flex items-center justify-center font-bold text-sm">
               <BookOpen className="w-4 h-4" />
             </span>
-            <span className="text-xs font-bold uppercase tracking-wider text-indigo-700 dark:text-yellow-400">
+            <span id="enrollment-modal-title" className="text-xs font-bold uppercase tracking-wider text-indigo-700 dark:text-yellow-400">
               Demo Cohort Enrollment
             </span>
           </div>
 
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleCloseModal}
             aria-label="Close dialog"
             className="p-2 rounded-xl text-slate-500 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
@@ -282,7 +286,7 @@ export default function EnrollModal({ course, isOpen, onClose }) {
 
               <div className="pt-2">
                 <Button
-                  onClick={onClose}
+                  onClick={handleCloseModal}
                   variant="primary"
                   size="md"
                   className="w-full"

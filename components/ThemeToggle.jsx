@@ -1,41 +1,37 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { Sun, Moon } from "lucide-react";
 
-export default function ThemeToggle() {
-  const [theme, setTheme] = useState("light");
-  const [mounted, setMounted] = useState(false);
+function subscribe(callback) {
+  window.addEventListener("storage", callback);
+  return () => window.removeEventListener("storage", callback);
+}
 
-  useEffect(() => {
-    setMounted(true);
-    const savedTheme = localStorage.getItem("raivatedu-theme");
-    if (savedTheme === "dark" || (!savedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
-      setTheme("dark");
-      document.documentElement.classList.add("dark");
-    } else {
-      setTheme("light");
-      document.documentElement.classList.remove("dark");
-    }
-  }, []);
+function getSnapshot() {
+  if (typeof window === "undefined") return "light";
+  const saved = localStorage.getItem("raivatedu-theme");
+  if (saved) return saved;
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+
+function getServerSnapshot() {
+  return "light";
+}
+
+export default function ThemeToggle() {
+  const theme = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
   const toggleTheme = () => {
-    if (theme === "light") {
-      setTheme("dark");
+    const nextTheme = theme === "light" ? "dark" : "light";
+    localStorage.setItem("raivatedu-theme", nextTheme);
+    if (nextTheme === "dark") {
       document.documentElement.classList.add("dark");
-      localStorage.setItem("raivatedu-theme", "dark");
     } else {
-      setTheme("light");
       document.documentElement.classList.remove("dark");
-      localStorage.setItem("raivatedu-theme", "light");
     }
+    window.dispatchEvent(new Event("storage"));
   };
-
-  if (!mounted) {
-    return (
-      <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700" />
-    );
-  }
 
   return (
     <button
